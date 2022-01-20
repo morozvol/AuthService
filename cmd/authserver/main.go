@@ -1,12 +1,10 @@
 package main
 
 import (
-	"authservice/internal/app/apiserver"
 	"flag"
-
-	"log"
-
 	"github.com/BurntSushi/toml"
+	"github.com/morozvol/AuthService/internal/app/apiserver"
+	"log"
 )
 
 var (

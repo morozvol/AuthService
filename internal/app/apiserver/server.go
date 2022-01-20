@@ -1,11 +1,11 @@
 package apiserver
 
 import (
-	"authservice/internal/app/model"
-	"authservice/internal/app/store"
-	"authservice/pkg/jwt"
 	"encoding/json"
 	"errors"
+	"github.com/morozvol/AuthService/internal/app/model"
+	"github.com/morozvol/AuthService/internal/app/store"
+	"github.com/morozvol/AuthService/pkg/jwt"
 	"github.com/sirupsen/logrus"
 	"net/http"
 
@@ -79,7 +79,7 @@ func (s *server) handleLogin() func(http.ResponseWriter, *http.Request) {
 		}
 
 		u, err := s.store.User().FindByEmail(req.Email)
-		if err != nil || !u.ComparePassword(req.Password, u.Sold) {
+		if err != nil || !u.ComparePassword(req.Password, u.Salt) {
 			s.error(w, r, http.StatusUnauthorized, errIncorrectEmailOrPassword)
 			return
 		}

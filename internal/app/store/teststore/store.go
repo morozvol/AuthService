@@ -1,21 +1,18 @@
-package sqlstore
+package teststore
 
 import (
-	"github.com/jmoiron/sqlx"
+	"github.com/morozvol/AuthService/internal/app/model"
 	"github.com/morozvol/AuthService/internal/app/store"
 )
 
 // Store ...
 type Store struct {
-	db             *sqlx.DB
 	userRepository *UserRepository
 }
 
 // New ...
-func New(dbPool *sqlx.DB) *Store {
-	return &Store{
-		db: dbPool,
-	}
+func New() *Store {
+	return &Store{}
 }
 
 // User ...
@@ -26,6 +23,7 @@ func (s *Store) User() store.UserRepository {
 
 	s.userRepository = &UserRepository{
 		store: s,
+		users: make(map[int]*model.User),
 	}
 
 	return s.userRepository

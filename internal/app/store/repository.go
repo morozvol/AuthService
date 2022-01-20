@@ -1,6 +1,6 @@
 package store
 
-import "authservice/internal/app/model"
+import "github.com/morozvol/AuthService/internal/app/model"
 
 // UserRepository ...
 type UserRepository interface {

@@ -1,9 +1,9 @@
 package jwt
 
 import (
-	"authservice/internal/app/model"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/morozvol/AuthService/internal/app/model"
 	"time"
 )
 

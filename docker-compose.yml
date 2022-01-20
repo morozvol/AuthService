@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:latest
+
+    environment:
+      POSTGRES_DB: "auth"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "db_password"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+        - ./db/initDB:/docker-entrypoint-initdb.d
+        - ./db/data:/var/lib/postgresql/data
+    ports:
+      - "5430:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    networks:
+      - postgres
+
+  authservice:
+    container_name: pgadmin_container
