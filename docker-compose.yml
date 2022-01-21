@@ -1,20 +1,18 @@
 version: "3.9"
 services:
-  postgres:
+
+  db:
     container_name: postgres_container
     image: postgres:latest
-
-    environment:
-      POSTGRES_DB: "auth"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "db_password"
+    env_file:
+      db.env
     volumes:
-        - ./db/initDB:/docker-entrypoint-initdb.d
-        - ./db/data:/var/lib/postgresql/data
+      - ./db/initDB:/docker-entrypoint-initdb.d
+      - /home/morozvol/GolandProjects:/var/lib/postgresql/data
     ports:
       - "5430:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d auth"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d auth" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,8 +23,13 @@ services:
         limits:
           cpus: '1'
           memory: 4G
-    networks:
-      - postgres
 
-  authservice:
-    container_name: pgadmin_container
+  auth_service:
+    container_name: auth_service
+    image: morozvol/auth_service:latest
+    ports:
+      - 8050:8050
+    env_file:
+      .env
+    depends_on:
+      - db

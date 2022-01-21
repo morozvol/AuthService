@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v4/stdlib"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
+	"github.com/morozvol/AuthService/internal/app/config"
 	"github.com/morozvol/AuthService/internal/app/store/sqlstore"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -14,7 +15,7 @@ import (
 )
 
 // Start ...
-func Start(config *Config) error {
+func Start(config *config.Config) error {
 
 	db, err := newDB(config, logrus.StandardLogger())
 
@@ -28,15 +29,16 @@ func Start(config *Config) error {
 	return http.ListenAndServe(config.BindAddr, srv)
 }
 
-func newDB(config *Config, logger *logrus.Logger) (*sqlx.DB, error) {
+func newDB(config *config.Config, logger *logrus.Logger) (*sqlx.DB, error) {
 
 	// parse connection string
-	dbConf, err := pgx.ParseConfig(config.DatabaseURL)
+	dbConf, err := pgx.ParseConfig(config.DB.GetConnactionString())
 	if err != nil {
 		return nil, err
 	}
 
 	dbConf.Logger = logrusadapter.NewLogger(logger)
+	dbConf.Host = config.DB.Host
 
 	// register pgx conn
 	dsn := stdlib.RegisterConnConfig(dbConf)

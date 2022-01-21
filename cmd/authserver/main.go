@@ -1,25 +1,13 @@
 package main
 
 import (
-	"flag"
-	"github.com/BurntSushi/toml"
 	"github.com/morozvol/AuthService/internal/app/apiserver"
+	"github.com/morozvol/AuthService/internal/app/config"
 	"log"
 )
 
-var (
-	configPath string
-)
-
-func init() {
-	flag.StringVar(&configPath, "config-path", "conf/authserver.toml", "path to config file")
-}
-
 func main() {
-	flag.Parse()
-
-	config := apiserver.NewConfig()
-	_, err := toml.DecodeFile(configPath, config)
+	config, err := config.Init()
 	if err != nil {
 		log.Fatal(err)
 	}

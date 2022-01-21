@@ -1,0 +1,8 @@
+db:
+  name: "auth"
+  user: "postgres"
+  host: "db"
+  port: "5432"
+
+bind_addr: ":8050"
+log_level: "debug"

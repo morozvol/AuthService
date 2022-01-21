@@ -3,6 +3,7 @@ package apiserver
 import (
 	"encoding/json"
 	"errors"
+	"github.com/morozvol/AuthService/internal/app/config"
 	"github.com/morozvol/AuthService/internal/app/model"
 	"github.com/morozvol/AuthService/internal/app/store"
 	"github.com/morozvol/AuthService/pkg/jwt"
@@ -12,10 +13,6 @@ import (
 	"github.com/gorilla/handlers"
 
 	"github.com/gorilla/mux"
-)
-
-const (
-	sessionName = "WebStore"
 )
 
 var (
@@ -28,10 +25,10 @@ type server struct {
 	router *mux.Router
 	logger *logrus.Logger
 	store  store.Store
-	config *Config
+	config *config.Config
 }
 
-func newServer(store store.Store, config *Config) *server {
+func newServer(store store.Store, config *config.Config) *server {
 	s := &server{
 		router: mux.NewRouter(),
 		logger: logrus.New(),
