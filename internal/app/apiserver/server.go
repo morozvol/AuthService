@@ -3,16 +3,14 @@ package apiserver
 import (
 	"encoding/json"
 	"errors"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"github.com/morozvol/AuthService/internal/app/config"
 	"github.com/morozvol/AuthService/internal/app/model"
 	"github.com/morozvol/AuthService/internal/app/store"
 	"github.com/morozvol/AuthService/pkg/jwt"
 	"github.com/sirupsen/logrus"
 	"net/http"
-
-	"github.com/gorilla/handlers"
-
-	"github.com/gorilla/mux"
 )
 
 var (
@@ -21,15 +19,22 @@ var (
 	errNotAuthenticated         = errors.New("not authenticated")
 )
 
-type server struct {
+//Server ...
+type Server struct {
 	router *mux.Router
 	logger *logrus.Logger
 	store  store.Store
 	config *config.Config
 }
 
-func newServer(store store.Store, config *config.Config) *server {
-	s := &server{
+// Start Server
+func Start(config *config.Config, srv *Server) error {
+	return http.ListenAndServe(config.BindAddr, srv)
+}
+
+// New Server
+func New(store store.Store, config *config.Config) *Server {
+	s := &Server{
 		router: mux.NewRouter(),
 		logger: logrus.New(),
 		store:  store,
@@ -41,28 +46,28 @@ func newServer(store store.Store, config *config.Config) *server {
 	return s
 }
 
-func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.router.ServeHTTP(w, r)
 }
 
-func (s *server) configureRouter() {
+func (s *Server) configureRouter() {
 	s.router.Use(handlers.CORS(handlers.AllowedOrigins([]string{"*"})))
 	s.router.HandleFunc("/login", s.handleLogin()).Methods("POST")
 	s.router.HandleFunc("/signup", s.handleSignUp()).Methods("POST")
 }
 
-func (s *server) error(w http.ResponseWriter, r *http.Request, code int, err error) {
+func (s *Server) error(w http.ResponseWriter, r *http.Request, code int, err error) {
 	s.respond(w, r, code, map[string]string{"error": err.Error()})
 }
 
-func (s *server) respond(w http.ResponseWriter, r *http.Request, code int, data interface{}) {
+func (s *Server) respond(w http.ResponseWriter, r *http.Request, code int, data interface{}) {
 	w.WriteHeader(code)
 	if data != nil {
 		json.NewEncoder(w).Encode(data)
 	}
 }
 
-func (s *server) handleLogin() func(http.ResponseWriter, *http.Request) {
+func (s *Server) handleLogin() func(http.ResponseWriter, *http.Request) {
 	type request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -88,7 +93,7 @@ func (s *server) handleLogin() func(http.ResponseWriter, *http.Request) {
 	}
 }
 
-func (s *server) handleSignUp() func(http.ResponseWriter, *http.Request) {
+func (s *Server) handleSignUp() func(http.ResponseWriter, *http.Request) {
 	type request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -117,7 +122,5 @@ func (s *server) handleSignUp() func(http.ResponseWriter, *http.Request) {
 
 		u.Sanitize()
 		s.respond(w, r, http.StatusCreated, u)
-		//TODO: при создании пользователя, при момощи RabbitMQ(например),
-		// Отправляем всем сервисам для создания корины, профимя...
 	}
 }

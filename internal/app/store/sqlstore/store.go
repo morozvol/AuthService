@@ -12,7 +12,7 @@ type Store struct {
 }
 
 // New ...
-func New(dbPool *sqlx.DB) *Store {
+func New(dbPool *sqlx.DB) store.Store {
 	return &Store{
 		db: dbPool,
 	}

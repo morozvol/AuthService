@@ -3,6 +3,7 @@ module github.com/morozvol/AuthService
 go 1.17
 
 require (
+	github.com/confluentinc/confluent-kafka-go v1.8.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/google/uuid v1.3.0
@@ -13,13 +14,12 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.0
+	go.uber.org/dig v1.13.0
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
-	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.8.2
 )
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
-	github.com/confluentinc/confluent-kafka-go v1.8.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect

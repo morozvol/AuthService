@@ -1,35 +1,18 @@
-package apiserver
+package db
 
 import (
 	"database/sql"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/log/logrusadapter"
 	"github.com/jackc/pgx/v4/stdlib"
-	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
 	"github.com/morozvol/AuthService/internal/app/config"
-	"github.com/morozvol/AuthService/internal/app/store/sqlstore"
 	"github.com/sirupsen/logrus"
-	"net/http"
 	"time"
 )
 
-// Start ...
-func Start(config *config.Config) error {
-
-	db, err := newDB(config, logrus.StandardLogger())
-
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	store := sqlstore.New(db)
-	srv := newServer(store, config)
-	return http.ListenAndServe(config.BindAddr, srv)
-}
-
-func newDB(config *config.Config, logger *logrus.Logger) (*sqlx.DB, error) {
+// New return sqlx.DB
+func New(config *config.Config, logger *logrus.Logger) (*sqlx.DB, error) {
 
 	// parse connection string
 	dbConf, err := pgx.ParseConfig(config.DB.GetConnactionString())
